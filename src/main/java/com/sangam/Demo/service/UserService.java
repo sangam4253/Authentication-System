@@ -11,11 +11,14 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public User registerUser(User user) {
+    public User registerUser(User user) {   
     	return userRepository.save(user); // Save user to the database
     }
 
     public User getUserById(Long id) {
         return userRepository.findById(id).orElse(null); // Retrieve user by ID
+    }
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email); // Fetch user by email.
     }
 }
