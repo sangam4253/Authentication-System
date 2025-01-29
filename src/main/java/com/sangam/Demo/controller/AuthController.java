@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/api/users")
@@ -21,7 +22,7 @@ public class AuthController {
     public String registerUser(@RequestParam String name, 
             @RequestParam String email, 
             @RequestParam String password, 
-             Model model) {
+            RedirectAttributes redirectAttributes) {
         try {
         	//System.out.println(name);
         	 User newUser = new User();
@@ -29,7 +30,7 @@ public class AuthController {
              newUser.setEmail(email);
              newUser.setPassword(password);
             userService.registerUser(newUser);
-            model.addAttribute("message", "User registered successfully!");
+            redirectAttributes.addFlashAttribute("message", "User registered successfully! Please log in.");
     
             return "redirect:/login"; // Return the saved user with 200 OK
         } catch (Exception e) {
@@ -38,7 +39,8 @@ public class AuthController {
     }
     @PostMapping("/login")
     public String loginUser(@RequestParam String email, 
-                            @RequestParam String password, 
+                            @RequestParam String password,
+                            RedirectAttributes redirectAttributes,
                             Model model,HttpSession session) {
         // Validate user credentials
         User user = userService.findByEmail(email); // Fetch user by email.
@@ -51,8 +53,9 @@ public class AuthController {
             return "redirect:/dashboard"; // Redirects to dashboard mapping.
         } else {
             // If invalid credentials, reload login with an error message.
-            model.addAttribute("error", "Invalid email or password!");
-            return "login"; // Reload login page with error.
+            redirectAttributes.addFlashAttribute("error", "Invalid email or password!");
+
+            return "redirect:/login"; // Reload login page with error.
         }
     }
     @GetMapping("/logout")
@@ -62,5 +65,4 @@ public class AuthController {
         return "redirect:/login";
     }
     
-
 }

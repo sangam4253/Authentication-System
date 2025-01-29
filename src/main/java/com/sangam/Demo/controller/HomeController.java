@@ -15,7 +15,7 @@ public class HomeController {
         return "index";
     }
     @RequestMapping("/login")
-    public String login() {
+    public String login(Model model) {
         // Return the name of the Thymeleaf template (index.html without the extension)
         return "index";
     }

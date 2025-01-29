@@ -36,10 +36,15 @@
 </head>
 <body>
     <div class="container">
-    <div th:if="${message}" class="alert alert-success">
+         
+    
+        <div class="login-card card p-4">
+        <div th:if="${message}" class="alert alert-success">
         <p th:text="${message}"></p>
     </div>
-        <div class="login-card card p-4">
+    <div th:if="${error}" class="alert alert-danger text-center">
+            <span th:text="${error}"></span>
+        </div>
             <h3 class="text-center mb-4">Login</h3>
             <form th:action="@{/api/users/login}" method="post">
                 <div class="mb-3">
