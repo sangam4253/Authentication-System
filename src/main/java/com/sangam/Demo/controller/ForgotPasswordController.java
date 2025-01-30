@@ -33,7 +33,7 @@ public class ForgotPasswordController {
             String token = UUID.randomUUID().toString();
             userService.savePasswordResetToken(user, token);
 
-            String resetLink = "http://localhost:8080/auth/reset-password?token=" + token;
+            String resetLink = "http://localhost:8080/api/reset-password?token=" + token;
             emailService.sendEmail(user.getEmail(), "Password Reset Request",
                     "Click the link to reset your password: " + resetLink);
 
