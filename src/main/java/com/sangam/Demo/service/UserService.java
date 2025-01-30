@@ -2,23 +2,40 @@ package com.sangam.Demo.service;
 
 import com.sangam.Demo.model.User;
 import com.sangam.Demo.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import java.util.Optional;
 
 @Service
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
     public User registerUser(User user) {   
     	return userRepository.save(user); // Save user to the database
     }
 
-    public User getUserById(Long id) {
-        return userRepository.findById(id).orElse(null); // Retrieve user by ID
+    public void savePasswordResetToken(User user, String token) {
+        user.setResetToken(token);
+        userRepository.save(user);
     }
-    public User findByEmail(String email) {
-        return userRepository.findByEmail(email); // Fetch user by email.
+
+    public User findByPasswordResetToken(String token) {
+        return userRepository.findByResetToken(token);
+    }
+
+    public void updatePassword(User user, String password) {
+        user.setPassword(passwordEncoder.encode(password));
+        user.setResetToken(null); // Clear token after reset
+        userRepository.save(user);
     }
 }
+

@@ -18,6 +18,7 @@ public class User {
 
     @Column(nullable = false) // Marks the password column as NOT NULL
     private String password;
+    private String resetToken;
     
     public User() {
     	
@@ -60,4 +61,10 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+	public String getResetToken() {
+		return resetToken;
+	}
+	public void setResetToken(String resetToken) {
+		this.resetToken = resetToken;
+	}
 }
