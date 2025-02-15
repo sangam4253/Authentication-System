@@ -1,5 +1,5 @@
 package com.sangam.Demo.controller;
-
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.sangam.Demo.model.User;
 import com.sangam.Demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,13 +9,16 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @Controller
 @RequestMapping("/api/users")
 public class AuthController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+    
 
     // Register a new user
     @PostMapping("/register")
@@ -28,7 +31,8 @@ public class AuthController {
         	 User newUser = new User();
              newUser.setName(name);
              newUser.setEmail(email);
-             newUser.setPassword(password);
+             String encodedPassword = passwordEncoder.encode(password);
+             newUser.setPassword(encodedPassword);
             userService.registerUser(newUser);
             redirectAttributes.addFlashAttribute("message", "User registered successfully! Please log in.");
     
@@ -45,7 +49,7 @@ public class AuthController {
         // Validate user credentials
         User user = userService.findByEmail(email); // Fetch user by email.
 
-        if (user != null && user.getPassword().equals(password)) {
+        if (user != null && passwordEncoder.matches(password, user.getPassword()))  {
             // If credentials are valid, redirect to the dashboard.
             model.addAttribute("message", "Login successful!");
             session.setAttribute("loggedInUser", user);

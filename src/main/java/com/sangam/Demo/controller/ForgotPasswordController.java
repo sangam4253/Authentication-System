@@ -41,8 +41,16 @@ public class ForgotPasswordController {
         } else {
             model.addAttribute("error", "Email not found!");
         }
-        return "forgot-password";
+        return "forget-password";
     }
+    @GetMapping("/reset-password")
+    public String resetPassword1(@RequestParam String token, Model model) {
+    
+    	User user = userService.findByPasswordResetToken(token);
+    	model.addAttribute("token", token);
+    	return "reset-password";
+    }
+    
     @PostMapping("/reset-password")
     public String resetPassword(@RequestParam String token,
                                 @RequestParam String password,
@@ -61,7 +69,7 @@ public class ForgotPasswordController {
 
         userService.updatePassword(user, password);
         model.addAttribute("message", "Password reset successful! You can now login.");
-        return "login";
+        return "index";
     }
 
 }
